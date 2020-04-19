@@ -30,7 +30,7 @@ function draw() {
     const model = models.value();
 
     // Cycling through the map and updating creatures
-    for (let i = 0; i < 20; i ++) { world.run(model); }  
+    for (let i = 0; i < 30; i ++) { world.run(model); }  
     world.render(model);
 
     // Reporting
@@ -237,9 +237,6 @@ World.prototype.run = function(model) {
             if (generation > 80) {energy = 0;}
             a_brave_new_world[x][y].energy = energy;
             a_brave_new_world[x][y].generation += 1;
-            
-           
-
         }
     }
     if (offsprings.length > 1) {
@@ -352,19 +349,24 @@ function CreatureX(x, y, a, b, c, z, e) {
 
   
 function similar(g1, g2) {
-    if (Math.abs(g2-g1) < distance) {
-        return true;
-    } 
-    else {
-        return false;
+    var gap = Math.abs(g2-g1);
+    if (255 - gap < gap) {gap = 255 - gap; }
+    var probability = Math.ceil(Math.random() * distance * 2);
+    if (gap < probability) { 
+        return true ; 
+    } else { 
+        return false; 
     }
 }
 
 function opposite(g1, g2) {
-    if (Math.abs(g2-g1) > (128 - distance)) {
-        return true;
-    } 
-    else {
-        return false;
+    var gap = Math.abs(g2-g1);
+    if (255 - gap < gap) {gap = 255 - gap; }
+    gap = 128 - gap;
+    var probability = Math.ceil(Math.random() * distance * 2);
+    if (gap < probability) { 
+        return true ; 
+    } else { 
+        return false; 
     }
 }
