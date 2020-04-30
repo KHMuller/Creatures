@@ -7,30 +7,39 @@ let steps = 6; // both height and width must be divisable by steps
 let energy_mov = 10;  // Energy gain per move
 let energy_mit = 150; // Energy cap level for mitosis
 let energy_max = 250; // Energy max level
+let pol = -1;
 
-let mutation_rate = 100; // Probability of a mutation 1 / 100
-let shuffle_rate = 100;  // Probability of recombination 1 / 100
+let mutation_rate = 1000; // Probability of a mutation 1 / 100
+let shuffle_rate = 10000;  // Probability of recombination 1 / 100
 let distance = 20;       // Max distance of two genes considered similar 
                          // and Min distance of two genes considered opposite (128 - distance)
 
 function setup() {
     var canvas = createCanvas(width, height);
     canvas.parent('WorldOfCreatures');
-    world = new World();
+    startWorld();
 
     // Add slider to switch model
-    models = createSlider(1, 4, 2);
+    models = createSlider(1, 4, 3);
     models.parent('WOCModels');
+    pols = createSlider(0, 1, 1); 
+    pols.parent('WOCPols');   
+}
+
+function startWorld() {
+    world = new World();
 }
 
 function draw() {
     var WOCModel = document.getElementById("WOCModel");
+    var WOCPol = document.getElementById("WOCPol");
     var WOCSpecies = document.getElementById("WOCSpecies");
     var WOCCreatures = document.getElementById("WOCCreatures");
     const model = models.value();
+    const pol = pols.value();
 
     // Cycling through the map and updating creatures
-    for (let i = 0; i < 30; i ++) { world.run(model); }  
+    for (let i = 0; i < 10; i ++) { world.run(model, pol); }  
     world.render(model);
 
     // Reporting
@@ -67,6 +76,7 @@ function draw() {
         }
     }
     WOCModel.innerHTML = model;
+    if (pol == 0) {WOCPol.innerHTML = '+';} else {WOCPol.innerHTML = '-';}
     WOCSpecies.innerHTML = species_count;
     WOCCreatures.innerHTML = creatures;
     update_canvas('locA', loc_a_pop);
@@ -119,43 +129,37 @@ function count_neighbours(map, x, y, model) {
                 if (map[new_x][new_y].energy > 0) { 
                     neighbours += 1;
                     if (model == 1) {
-                        if (similar(map[x][y].locA, map[new_x][new_y].locA)) { 
-                            friends += 1;
-                        } 
-                        if (opposite(map[x][y].locA, map[new_x][new_y].locA)) { 
+                        if (similar(map[x][y].locC, map[new_x][new_y].locC)) { 
                             foes += 1;
+                        } else {
+                            friends +=1;
                         }
                     } else if (model == 2) {
-                        if (similar(map[x][y].locA, map[new_x][new_y].locB)) {
-                            if (similar(map[x][y].locB, map[new_x][new_y].locA)) { friends += 1; }
-                        }
-                        if (opposite(map[x][y].locA, map[new_x][new_y].locB)) {
-                            if (similar(map[x][y].locB, map[new_x][new_y].locA)) { foes += 1; }
-                        }                
+                        if (similar(map[x][y].locA, map[new_x][new_y].locA)) { 
+                            if (opposite(map[x][y].locC, map[new_x][new_y].locC)) { 
+                                foes += 1;
+                            } else {
+                                friends +=1;
+                            }
+                        }             
                     } else if (model == 3 ) {
                         if (similar(map[x][y].locA, map[new_x][new_y].locB)) {
-                            if (similar(map[x][y].locB, map[new_x][new_y].locA)) {
-                                if (similar(map[x][y].locC, map[new_x][new_y].locC)) {
-                                    friends += 1;
-                                }
-
-                            }                            
-                        }
-                        if (opposite(map[x][y].locA, map[new_x][new_y].locB)) {
-                            if (similar(map[x][y].locB, map[new_x][new_y].locA)) {
-                                if (opposite(map[x][y].locC, map[new_x][new_y].locC)) {
-                                    foes += 1;
-                                }
-
-                            }                            
-                        }
+                            if (opposite(map[x][y].locC, map[new_x][new_y].locC)) { 
+                                foes += 1;
+                            } else {
+                                friends +=1;
+                            }
+                        }      
                     } else if (model == 4 ) {
                         if (similar(map[x][y].locA, map[new_x][new_y].locB)) {
-                            if (similar(map[x][y].locB, map[new_x][new_y].locB)) { friends += 1; }
-                        }
-                        if (similar(map[x][y].locA, map[new_x][new_y].locB)) {
-                            if (opposite(map[x][y].locB, map[new_x][new_y].locB)) { foes += 1; }
-                        }                            
+                            if (similar(map[x][y].locB, map[new_x][new_y].locA)) {
+                                if (opposite(map[x][y].locC, map[new_x][new_y].locC)) { 
+                                    foes += 1;
+                                } else {
+                                    friends +=1;
+                                }
+                            }
+                        }                        
                     }               
                 }
             }
@@ -177,7 +181,7 @@ function remove_multiplications(offsprings) {
 }
 
 
-World.prototype.run = function(model) {
+World.prototype.run = function(model, pol) {
     var a_brave_new_world = this.map_of_world;
     var offsprings = [];
     for (var x = 0; x < width; x += steps) {
@@ -188,15 +192,11 @@ World.prototype.run = function(model) {
             var neighbours = see_neighbours[0]
             var friends = see_neighbours[1];
             var foes = see_neighbours[2];
-
+            var polarization = 1;
+            if (pol == 1) { polarization = -1; }
             energy += energy_mov;
-            energy += friends * energy_mov;
-            energy -= foes * energy_mov * neighbours;
-            //energy -= neighbours * energy_mov;
-            //energy -= generation;            
-
-            
-            
+            energy = energy + friends * polarization;
+            energy = energy + foes * polarization * (-1);
 
             if (energy < 0) { energy = 0; }
             if (energy > energy_max) {energy = energy_max;} 
@@ -234,7 +234,7 @@ World.prototype.run = function(model) {
                     offsprings.push(new CreatureX(new_x, new_y, a, b, c, z, energy));
                 }
             }
-            if (generation > 80) {energy = 0;}
+            if (generation > 40) {energy = 0;}
             a_brave_new_world[x][y].energy = energy;
             a_brave_new_world[x][y].generation += 1;
         }
@@ -275,9 +275,10 @@ World.prototype.render = function(model) {
             red = cell.locA;
             green = cell.locB;
             blue = cell.locC;
-            if (model == 1) {green=0;blue = 0;}
-            if (model == 2) {blue = 0;}
-            if (model == 4) {blue = 0;}
+            if (model == 1) {red = 0; green = 0;}
+            if (model == 2) {green = 0;}
+            // if (model == 3) {blue = 0;}
+            // if (model == 4) {blue = 0;}
             if (cell.energy > 0) {
                 fill(red, green, blue);
                 stroke(56);
@@ -293,7 +294,7 @@ function Creature(a, b, c, z, e) {
     this.locC = c;
     this.locZ = z;
     this.energy = e;
-    this.generation = 0;
+    this.generation = Math.floor(Math.random() * 40);
 }
 
 function CreatureX(x, y, a, b, c, z, e) { 
@@ -302,7 +303,7 @@ function CreatureX(x, y, a, b, c, z, e) {
     if ((Math.floor(Math.random() * 2)) == 0) {
         direction = -1;
     }
-    let amount = Math.ceil(Math.random() * 128);
+    let amount = Math.ceil(Math.random() * distance);
     direction *= amount;
     this.X = x;
     this.Y = y;
@@ -349,24 +350,20 @@ function CreatureX(x, y, a, b, c, z, e) {
 
   
 function similar(g1, g2) {
-    var gap = Math.abs(g2-g1);
-    if (255 - gap < gap) {gap = 255 - gap; }
-    var probability = Math.ceil(Math.random() * distance * 2);
-    if (gap < probability) { 
-        return true ; 
-    } else { 
-        return false; 
-    }
+    // var gap = Math.abs(g2-g1);
+    // if (255 - gap < gap) {gap = 255 - gap; }
+    // var slope = Math.floor(Math.random() * distance * 2);
+    // if (gap < slope) { return true ; } else { return false; }
+
+    if (Math.abs(g2-g1) == 0) {return true;} else {return false;}
 }
 
 function opposite(g1, g2) {
-    var gap = Math.abs(g2-g1);
-    if (255 - gap < gap) {gap = 255 - gap; }
-    gap = 128 - gap;
-    var probability = Math.ceil(Math.random() * distance * 2);
-    if (gap < probability) { 
-        return true ; 
-    } else { 
-        return false; 
-    }
+    // var gap = Math.abs(g2-g1);
+    // if (255 - gap < gap) {gap = 255 - gap; }
+    // gap = 128 - gap; // apply opposite
+    // var slope = Math.floor(Math.random() * distance * 2);
+    // if (gap < slope) { return true ; } else { return false; }
+
+    if (Math.abs(g2 - g1) == 128) { return true; } else { return false;}
 }
