@@ -246,7 +246,8 @@
 						<p>
 							Species <span id="WOCSpecies"></span>
 							Creatures <span id="WOCCreatures"></span>
-						</p>	
+						</p>
+						<p><button onclick="javascript:startWorld();">Restart</button></p>	
 						<div class="grid-graphs">
 							<div>
 								<p style="margin-bottom:0.5em; font-weight:bold;">locA</p>
@@ -270,16 +271,18 @@
 						<h3>Models</h3>
 						<p>Change Selected Model <span id="WOCModel"></span></p>
 						<p id="WOCModels"></p>
-						<ol>
-							<li>Friend: locA = locA'<br />Foe: locA &ne; locA'</li>
-							<li>Friend: locA = locB' &amp; locA' = locB<br />Foe: locA &ne; locB' &amp; locA' = locB</li>
-							<li>Friend: locA = locB' &amp; locA' = locB &amp; locC = locC'<br />Foe: locA &ne; locB' &amp; locA' = locB &amp; locC &ne; locC'</li>
-							<li>Friend: locA = locB' &amp; locB = locB'<br />Foe: locA = locB' &amp; locB &ne; locB' </li>
+						<p style="margin-bottom:0;">Models - Perception</p>
+						<ol style="margin-top:0; padding-top:0">
+							<li>Always</li>
+							<li>locA vs locA'</li>
+							<li>locA vs locB'</li>
+							<li>locA vs locB' &amp; locB vs locA'</li>
 						</ol>
-						<p  style="font-size: 0.8em;line-height: 1.4em;">A creature gains energy by having friends nearby and loses energy by having foes nearby.</p>
-						<p  style="font-size: 0.8em;line-height: 1.4em;">When a creature creates an offspring mutation and shuffle can occur. Mutation modifies one allele. Shuffle exchanges swaps to genes.</p>
-						<p  style="font-size: 0.8em;line-height: 1.4em;">Two alleles are considered equal if the difference between the two alleles is less than 20.</p>
-						<p  style="font-size: 0.8em;line-height: 1.4em;">Two alleles are considered not equal if the difference between the two is greater than 108.</p>							
+						<p  style="font-size: 0.9em;line-height: 1.4em;">If a creature can see a neighbour, locC determines if it is an ally or a rival.</p>
+						<h3>Polarization</h3>
+						<p>Change Polarization <span id="WOCPol"></span></p>
+						<p id="WOCPols"></p>
+						<p  style="font-size: 0.9em;line-height: 1.4em;">With a positive polarization, a creature gains energy by having allies around and loses energy by having rivals around. With a negative polarization, the effect is reverse.</p>									
 					</div>
 				</div>
 			</div>
