@@ -239,9 +239,17 @@
     <header></header>
 		<article>
 			<div class="wrapper">
+				<h2>Creatures - P5.js Version 2</h2>
+				<p>This version uses a different approach than previous one. Instead of randomly 
+					selecting creatures from all creatures, the whole map is processed once per 
+					cycle and each creature updated on a clone of the original map. When 
+					different offsprings are trying to occupy the same space, they are all 
+					removed.</p>
+			</div>			
+			<div class="wrapper">
 				<div class="grid-container">
 					<div>
-						<h2>Bubble, World, Universe ... Whatever</h2>
+						<h3>Bubble, World, Universe ... Whatever</h3>
 						<div id="WorldOfCreatures"></div>
 						<p>
 							Species <span id="WOCSpecies"></span>
@@ -268,21 +276,21 @@
 						</div>
 					</div>
 					<div>
-						<h3>Models</h3>
-						<p>Change Selected Model <span id="WOCModel"></span></p>
-						<p id="WOCModels"></p>
-						<p style="margin-bottom:0;">Models - Perception</p>
+						<h3>Controls</h3>
+						<p>Mutation Rate 1/<span id="WOCMutationRate"></span><br />100 <span id="WOCMutationRates"></span> 10k</p>
+						<p>Crossover Rate 1/<span id="WOCCrossoverRate"></span><br />100 <span id="WOCCrossoverRates"></span> 10k</p>
+						<p>Perception <span id="WOCModel"></span><br />1 <span id="WOCModels"></span> 4</p>
+						<p>Polarization <span id="WOCPol"></span><br />+ <span id="WOCPols"></span> -</p>
+						<h3>Perception</h3>
 						<ol style="margin-top:0; padding-top:0">
 							<li>Always</li>
 							<li>locA vs locA'</li>
 							<li>locA vs locB'</li>
-							<li>locA vs locB' &amp; locB vs locA'</li>
+							<li>locA vs locC'</li>
 						</ol>
 						<p  style="font-size: 0.9em;line-height: 1.4em;">If a creature can see a neighbour, locC determines if it is an ally or a rival.</p>
 						<h3>Polarization</h3>
-						<p>Change Polarization <span id="WOCPol"></span></p>
-						<p id="WOCPols"></p>
-						<p  style="font-size: 0.9em;line-height: 1.4em;">With a positive polarization, a creature gains energy by having allies around and loses energy by having rivals around. With a negative polarization, the effect is reverse.</p>									
+						<p  style="font-size: 0.9em;line-height: 1.4em;">With a positive polarization, a creature gains energy by having allies around and loses energy by having rivals around. With a negative polarization, the effect is reverse.</p>
 					</div>
 				</div>
 			</div>
