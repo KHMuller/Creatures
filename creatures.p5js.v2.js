@@ -1,9 +1,9 @@
 let world;
 
 // the world
-let height = 300;
-let width = 450;
-let steps = 6;
+let height = 360;
+let width = 570;
+let steps = 10;
 
 // the fitness
 let fitness_mov = 10;  // fitness gain per move
@@ -47,7 +47,7 @@ function draw() {
     const crossover_rate = crossover_rates.value();
 
     // Cycling through the map and updating creatures
-    for (let i = 0; i < 40; i ++) { world.run(model, pol, mutation_rate, crossover_rate); }
+    for (let i = 0; i < 30; i ++) { world.run(model, pol, mutation_rate, crossover_rate); }
     world.render(model);
 
     // Reporting
@@ -66,13 +66,13 @@ function draw() {
     }
     for ( let i = 0; i < width; i += steps){ 
         for (let j = 0; j < height; j += steps){ 
-            if (world.map_of_world[i][j].fitness > 0) {
+            if (world.pool[i][j].fitness > 0) {
                 creatures += 1;
-                loc_a_pop[world.map_of_world[i][j].locA]++;
-                loc_b_pop[world.map_of_world[i][j].locB]++;
-                loc_c_pop[world.map_of_world[i][j].locC]++;
-                loc_z_pop[world.map_of_world[i][j].locZ]++;
-                var my_gene = world.map_of_world[i][j].locA + '-' + world.map_of_world[i][j].locB + '-' + world.map_of_world[i][j].locC;
+                loc_a_pop[world.pool[i][j].locA]++;
+                loc_b_pop[world.pool[i][j].locB]++;
+                loc_c_pop[world.pool[i][j].locC]++;
+                loc_z_pop[world.pool[i][j].locZ]++;
+                var my_gene = world.pool[i][j].locA + '-' + world.pool[i][j].locB + '-' + world.pool[i][j].locC;
                 if (typeof species[my_gene] === 'undefined' || !species[my_gene]) {
                     species[my_gene] = 1;
                     species_count ++;
@@ -102,24 +102,24 @@ function update_canvas(gene, frequency) {
     for (let i = 0; i <= 255; i++) {
         canvas_gene.fillStyle = 'rgba(0,0,0,0.8)';
         canvas_gene.beginPath();
-        canvas_gene.moveTo(0,i);
-        canvas_gene.lineTo(Math.ceil(frequency[i]/max_value*100),i);
+        canvas_gene.moveTo(i, 100);
+        canvas_gene.lineTo(i, 100-Math.ceil(frequency[i]/max_value*100));
         canvas_gene.strokeStyle = 'rgba(0,0,0,0.8)';
         canvas_gene.stroke();        
     }
 }
 
 function World() {
-	this.map_of_world = new Array();
+	this.pool = new Array();
     for (var x = 0; x < width; x += steps) {
-        this.map_of_world[x] = new Array();
+        this.pool[x] = new Array();
         for (var y = 0; y < height; y += steps) {
-            this.map_of_world[x][y] = new Creature();
+            this.pool[x][y] = new Creature();
         }
     }
 }
 
-function count_neighbours(map, x, y, model) {
+function count_neighbours(pool, x, y, model) {
     var neighbours = 0;
     var friends = 0;
     var foes = 0;
@@ -132,35 +132,35 @@ function count_neighbours(map, x, y, model) {
                 if (new_x >= width) { new_x -= width; }
                 if (new_y < 0) { new_y += height; }
                 if (new_y >= height) { new_y -= height; }
-                if (map[new_x][new_y].fitness > 0) { 
+                if (pool[new_x][new_y].fitness > 0) { 
                     neighbours += 1;
                     if (model == 1) {
-                        if (similar(map[x][y].locC, map[new_x][new_y].locC)) { 
+                        if (similar(pool[x][y].locC, pool[new_x][new_y].locC)) { 
                             friends += 1;
-                        } else if (opposite(map[x][y].locC, map[new_x][new_y].locC)) {
+                        } else if (opposite(pool[x][y].locC, pool[new_x][new_y].locC)) {
                             foes +=1;
                         }
                     } else if (model == 2) {
-                        if (similar(map[x][y].locA, map[new_x][new_y].locA)) { 
-                            if (similar(map[x][y].locC, map[new_x][new_y].locC)) { 
+                        if (similar(pool[x][y].locA, pool[new_x][new_y].locA)) { 
+                            if (similar(pool[x][y].locC, pool[new_x][new_y].locC)) { 
                                 friends += 1;
-                            } else if (opposite(map[x][y].locC, map[new_x][new_y].locC)) {
+                            } else if (opposite(pool[x][y].locC, pool[new_x][new_y].locC)) {
                                 foes +=1;
                             }
                         }             
                     } else if (model == 3 ) {
-                        if (similar(map[x][y].locA, map[new_x][new_y].locB)) {
-                            if (similar(map[x][y].locC, map[new_x][new_y].locC)) { 
+                        if (similar(pool[x][y].locA, pool[new_x][new_y].locB)) {
+                            if (similar(pool[x][y].locC, pool[new_x][new_y].locC)) { 
                                 friends += 1;
-                            } else if (opposite(map[x][y].locC, map[new_x][new_y].locC)) {
+                            } else if (opposite(pool[x][y].locC, pool[new_x][new_y].locC)) {
                                 foes +=1;
                             }
                         }      
                     } else if (model == 4 ) {
-                        if (similar(map[x][y].locA, map[new_x][new_y].locC)) {
-                            if (similar(map[x][y].locC, map[new_x][new_y].locC)) { 
+                        if (similar(pool[x][y].locA, pool[new_x][new_y].locC)) {
+                            if (similar(pool[x][y].locC, pool[new_x][new_y].locC)) { 
                                 friends += 1;
-                            } else if (opposite(map[x][y].locC, map[new_x][new_y].locC)) {
+                            } else if (opposite(pool[x][y].locC, pool[new_x][new_y].locC)) {
                                 foes +=1;
                             }
                         }                                                    
@@ -187,53 +187,53 @@ function remove_multiplications(offsprings) {
 
 
 World.prototype.run = function(model, pol, mutation_rate, crossover_rate) {
-    let new_map_of_world = this.map_of_world;
+    let new_pool = this.pool;
     let offsprings = [];
     for (let x = 0; x < width; x += steps) {
         for (let y = 0; y < height; y+= steps) {
-            let fitness = this.map_of_world[x][y].fitness;
-            let generation = this.map_of_world[x][y].generation;
-            let see_neighbours = count_neighbours(this.map_of_world, x, y, model);
+            let fitness = this.pool[x][y].fitness;
+            let generation = this.pool[x][y].generation;
+            let see_neighbours = count_neighbours(this.pool, x, y, model);
             let neighbours = see_neighbours[0]
             let friends = see_neighbours[1];
             let foes = see_neighbours[2];
             let polarization = 1;
             if (pol == 1) { polarization = -1; }
-            fitness += fitness_mov;
+            fitness = fitness + neighbours;
             fitness = fitness + friends * polarization;
             fitness = fitness + foes * polarization * (-1);
-
-
 
             if ((fitness > fitness_mit) && (neighbours < 8)) {
                 var where_to_spread = Math.floor(Math.random() * (8 - neighbours));
                 var new_x = -1;
                 var new_y = -1;
-                for (var k = 0; k < 8; k++){
-                    for (var i = -1; i <= 1; i++) {
-                        for (var j = -1; j <= 1; j++) {
-                            if (!(i === 0 && j ===0)) {
-                                var test_x = x + i * steps;
-                                var test_y = y + j * steps;
-                                if (test_x < 0) { test_x += width; }
-                                if (test_x >= width) { test_x -= width; }
-                                if (test_y < 0) { test_y += height; }
-                                if (test_y >= height) { test_y -= height; }                            
-                                if (this.map_of_world[test_x][test_y].fitness == 0) {
-                                    if (k === where_to_spread) {
-                                        new_x = test_x;
-                                        new_y = test_y;
-                                    }
+                var k = 0;
+
+                for (var i = -1; i <= 1; i++) {
+                    for (var j = -1; j <= 1; j++) {
+                        if (!(i === 0 && j ===0)) {
+                            var test_x = x + i * steps;
+                            var test_y = y + j * steps;
+                            if (test_x < 0) { test_x += width; }
+                            if (test_x >= width) { test_x -= width; }
+                            if (test_y < 0) { test_y += height; }
+                            if (test_y >= height) { test_y -= height; }                            
+                            if (this.pool[test_x][test_y].fitness == 0) {
+                                if (k === where_to_spread) {
+                                    new_x = test_x;
+                                    new_y = test_y;
                                 }
+                                k++;
                             }
                         }
                     }
+
                 }
                 if ((new_x != -1 && new_y != -1)) {
-                    var a = this.map_of_world[x][y].locA;
-                    var b = this.map_of_world[x][y].locB;
-                    var c = this.map_of_world[x][y].locC;
-                    var z = this.map_of_world[x][y].locZ;
+                    var a = this.pool[x][y].locA;
+                    var b = this.pool[x][y].locB;
+                    var c = this.pool[x][y].locC;
+                    var z = this.pool[x][y].locZ;
                     fitness = Math.floor(fitness / 2);
                     offsprings.push(new CreatureX(new_x, new_y, a, b, c, z, fitness, mutation_rate, crossover_rate));
                 }
@@ -241,8 +241,8 @@ World.prototype.run = function(model, pol, mutation_rate, crossover_rate) {
             if (generation > 40) { fitness = 0; }
             if (fitness < 0) { fitness = 0; }
             if (fitness > fitness_max) {fitness = fitness_max;}             
-            new_map_of_world[x][y].fitness = fitness;
-            new_map_of_world[x][y].generation += 1;
+            new_pool[x][y].fitness = fitness;
+            new_pool[x][y].generation += 1;
         }
     }
     if (offsprings.length > 1) {
@@ -250,10 +250,10 @@ World.prototype.run = function(model, pol, mutation_rate, crossover_rate) {
     }
     for (let i = 0; i < offsprings.length; i++){
         if (offsprings[i].fitness !== 0){
-            new_map_of_world[offsprings[i].X][offsprings[i].Y] = new CreatureO(offsprings[i].locA, offsprings[i].locB, offsprings[i].locC, offsprings[i].locZ, offsprings[i].fitness);
+            new_pool[offsprings[i].X][offsprings[i].Y] = new CreatureO(offsprings[i].locA, offsprings[i].locB, offsprings[i].locC, offsprings[i].locZ, offsprings[i].fitness);
         }
     }
-    this.map_of_world = new_map_of_world;
+    this.pool = new_pool;
 }
 
 World.prototype.render = function(model) {
@@ -265,14 +265,10 @@ World.prototype.render = function(model) {
     
     for (var x = 0; x < width; x += steps) {
         for (var y = 0; y < height; y+= steps) {
-            var cell = this.map_of_world[x][y];
+            var cell = this.pool[x][y];
             red = cell.locA;
             green = cell.locB;
             blue = cell.locC;
-            // if (model == 1) {red = 0; green = 0;}
-            // if (model == 2) {green = 0;}
-            // if (model == 3) {blue = 0;}
-            // if (model == 4) {blue = 0;}
             if (cell.fitness > 0) {
                 fill(red, green, blue, 128+Math.floor(cell.fitness/2));
                 stroke(0);
@@ -307,28 +303,28 @@ function CreatureX(x, y, a, b, c, z, e, mutation_rate, crossover_rate) {
     // Mutation
     let mutation = Math.floor(Math.random() * mutation_rate * 8)  
     if (mutation == 0) {
-        a += Math.ceil(Math.random() * distance * 12);
+        a += Math.ceil(Math.random() * distance);
         if (a > 255) { a -= 256; }
     }  else if (mutation == 1) {
-        a -= Math.ceil(Math.random() * distance * 12);
+        a -= Math.ceil(Math.random() * distance);
         if (a < 0) { a += 256; }      
     } else if (mutation == 2) {
-        b += Math.ceil(Math.random() * distance * 12);
+        b += Math.ceil(Math.random() * distance);
         if (b > 255) { b -= 256; }
     }  else if (mutation == 3) {
-        b -= Math.ceil(Math.random() * distance * 12);
+        b -= Math.ceil(Math.random() * distance);
         if (b < 0) { b += 256; }      
     } else if (mutation == 4) {
-        c += Math.ceil(Math.random() * distance * 12);
+        c += Math.ceil(Math.random() * distance);
         if (c > 255) { c -= 256; }
     }  else if (mutation == 5) {
-        c -= Math.ceil(Math.random() * distance * 12);
+        c -= Math.ceil(Math.random() * distance);
         if (c < 0) { c += 256; }      
     }  else if (mutation == 6) {
-        z -= Math.ceil(Math.random() * distance * 12);
+        z -= Math.ceil(Math.random() * distance);
         if (z < 0) { z += 256; }      
     }  else if (mutation == 7) {
-        z -= Math.ceil(Math.random() * distance * 12);
+        z -= Math.ceil(Math.random() * distance);
         if (z < 0) { z += 256; }      
     }
     
@@ -343,7 +339,7 @@ function CreatureX(x, y, a, b, c, z, e, mutation_rate, crossover_rate) {
         var t = a;
         a = c;
         c = t;           
-    } else if (crossover == 3) {
+    } else if (crossover == 2) {
         var t = b;
         b = c;
         c = t;    
@@ -366,9 +362,6 @@ function similar(g1, g2) {
     if (255 - gap < gap) {gap = 255 - gap; }
     var slope = Math.floor(Math.random() * distance * 2);
     if (gap < slope) { return true ; } else { return false; }
-
-    // replace above with line below for exact match only
-    // if (Math.abs(g2-g1) == 0) {return true;} else {return false;}
 }
 
 function opposite(g1, g2) {
@@ -377,7 +370,4 @@ function opposite(g1, g2) {
     gap = 128 - gap; // apply opposite
     var slope = Math.floor(Math.random() * distance * 2);
     if (gap < slope) { return true ; } else { return false; }
-
-    // replace above with line below for exact match only
-    // if (Math.abs(g2 - g1) == 128) { return true; } else { return false;}
 }
