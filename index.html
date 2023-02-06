@@ -1,334 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="description" content="" />
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
-    <script type="text/javascript" src="creatures.p5v3.js?v=6"></script>
-    	<style>
-		body {
-			background-color: #3DCC27;
-			font-family: 'Open Sans', 'Arial', 'sans-serif';
-			margin: 0;
-			font-size: 16px;
-		}
-		.alert {
-			background-color: #8bc34a;
-			color: white;
-		}  
-		header {
-			background-color: #D8FF17;
-			padding: 0.5rem 1rem;
-			margin-top: 1rem;
-		}
-		main { padding:0;}
-		article { background-color: rgba(255, 255, 255, 0.95); padding: 1em; }
-		nav {
-			background-color: #e6e6e6;
-			padding: 1em;
-			color: white;
-		}
-		nav a {color:black;text-decoration:underline;}
-		nav a:hover {color:black;text-decoration:none;}
-		aside { background-color: rgba(255, 255, 255, 0.95); padding: 0; }
-		footer {
-			color: white;
-			background-color: #3327CC;
-			padding: 0.5em 1em;
-		}
-
-		ul {
-			list-style: none;
-			padding: 0;
-			margin: 0.5em 0 1em 0;
-		}
-
-		ul li {
-		  padding-left: 1em;
-			padding-bottom: 0.5em;
-		  text-indent: 0em;
-		}
-		ul li::before {
-		content: "-  "; /* removed \2022 */
-		color: #573d12;
-			font-weight:bold;
-			display: inline-block; /* Needed to add space between the bullet and the text */
-		  width: 1em; /* Also needed for space (tweak if needed) */
-		  margin-left: -1em; /* Also needed for space (tweak if needed) */
-		}
-		ul lh {
-			font-weight: bold;
-			display: block;
-			border-bottom: 1px dotted grey;
-			margin: 1rem 0;
-		}
-		figure {
-			margin:0;
-			padding:0;
-			width:100%;
-		}
-		figure {
-			margin-bottom:1em;
-		}
-		figcaption {
-			font-style:italic;
-		}
-		aside figure {
-			margin-bottom:0;
-			width:100%;
-		}
-		p {
-			margin-top:0;
-			letter-spacing: 1px;
-			line-height:1.8em;
-		}
-		header p {
-			margin-bottom:0;
-		}
-		h1 {
-			font-size: 2rem;
-			text-transform: uppercase;
-			margin: 0;
-			font-weight: normal;
-		}
-		h2 {
-			margin-top:0;
-			font-size:1.3rem;
-			text-transform:uppercase;
-			font-weight:600;
-		}
-		h3 {
-			margin: 0;
-			font-size: 1.1rem;
-			font-weight: 600;
-			text-transform: uppercase;
-		}
-
-		button {
-			padding: 0.5rem;
-			font-size: 1rem;
-			border-radius: 0.5rem;
-			background-color: green;
-			color: white;
-			border-color: green;
-			border-style: solid;
-		}
-
-		footer p { text-align:center;}
-		footer a { color:white;}
-		.wrapper { margin: 0 auto;}
-		.gallery {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			grid-column-gap: 1px;
-			grid-row-gap: 1px;
-		}
-		.gallery > a {
-			color:white;
-			text-decoration:none;
-			background-color:#123456;
-		}
-		.gallery>a>figure>figcaption{
-			font-size: 0.8rem;
-			font-style: normal;
-			padding: 0rem 0 0.3rem 0;
-			text-align: center;
-			text-decoration:none;
-		}
-		.alert {
-			padding:1rem;
-			border-radius: 0.5rem;
-		}
-		.code {
-			font-family: monospace;
-	    line-height: 2em;
-	    padding: 0.2em;
-	    background-color: #ddd;
-		}
-		.category {
-			margin-bottom: 0;
-	    font-style: italic;
-	    background-color: #dec7a2;
-	    width: auto;
-	    display: inline-block;
-	    color: #000;
-	    padding: 0.1em 0.5em;
-		}
-
-		.bar {
-		width: 25px;
-		  height: 1px;
-		  background-color: white;
-		  margin: 5px 0;
-	}
-
-		.grid-container {
-		  display: grid;
-			grid-template-columns: repeat(1, 1fr);
-		  grid-column-gap: 1em;
-			grid-row-gap: 1em;
-		}
-
-		.species {
-			background-color: #A3670250;
-			padding: 0.5rem;
-			font-size: 0.8rem;
-		}
-		.species>h3 {
-			font-size:1rem;
-		}
-
-		.grid-container {
-			overflow: hidden;
-		}
-
-		.two-photos {
-			margin-bottom:1em;
-		}
-
-		.two-photos > figure > figcaption {text-align:center;}
-
-		@media only screen and (min-width: 768px) {
-			.grid-container {
-			  display: grid;
-				grid-template-columns: 2fr 1fr;
-			  grid-column-gap: 1em;
-				grid-row-gap: 1em;
-			}
-			.grid-container>div:nth-child(2){
-				border-left: 1px dotted;
-				padding-left: 1em;
-			}
-			.blog-post-photo {
-			  display: grid;
-				grid-template-columns: 1fr 1fr;
-			  grid-column-gap: 1em;
-				grid-row-gap: 1em;
-			}
-			.blog-post-photo>div{
-				border-left: 1px dotted;
-				padding-left: 1em;
-			}
-			.two-photos {
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-			  grid-column-gap: 0.1em;
-				grid-row-gap: 1em;
-			}
-			.gallery {
-				display: grid;
-				grid-template-columns: 1fr 1fr 1fr 1fr;
-			  grid-column-gap: 1px;
-				grid-row-gap: 1px;
-			}
-		}
-
-		.published {
-			font-style: italic;
-		}
-
-		.disclaimer {
-			font-size: 0.9rem;
-			background-color: #d3d3d399;
-			padding: 0.5rem;
-			border-radius: 0.5rem;
-		}
-		.technical {
-			font-size: 0.9rem;
-			font-style:normal;
-		}
-
-		@media screen and (min-width: 1040px) {
-			.wrapper {max-width:960px;}
-			ul li {padding-bottom: 0.1em;}
-			aside {padding-top: 1rem;}
-		}
-
-		/* When the screen is less than 600 pixels wide, hide all links, except for the first one ("Home"). Show the link that contains should open and close the topnav (.icon) */
-		@media screen and (max-width: 800px) {
-		  .topnav a:not(:first-child) {display: none;}
-		  .topnav a.icon {
-		    float: right;
-		    display: block;
-		  }
-		}
-
-		/* The "responsive" class is added to the topnav with JavaScript when the user clicks on the icon. This class makes the topnav look good on small screens (display the links vertically instead of horizontally) */
-		@media screen and (max-width: 800px) {
-
-		}
-
-    	</style>
-	<style>
-		canvas {
-			border: 1px solid #9e9e9e;
-		}
-		@media screen and (min-width: 800px) {
-			.grid-graphs {
-				display: grid;
-				grid-template-columns: 1fr 1fr;
-			}
-		}
-	</style>
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Exploring Natural Selection with "Creatures" - A Simulation</title>
+    	<meta name="description" content="Get a first-hand look at the process of natural selection with a simulation called *Creatures* written in JavaScript using the P5.js library." />
+	<link rel="shortcut icon" href="/favicon.ico" />	
+	<link rel="canonical" href="https://muuuh.com/creatures/" />	
+	<script type="text/javascript" src="/_assets/js/p5.js"></script>
+	<script type="text/javascript" src="/_assets/js/creatures.p5v4.js"></script>
+	<link rel="stylesheet" type="text/css" href="/_assets/css/creatures.css" />
+	<link rel="stylesheet" type="text/css" href="/_assets/css/styles.20220923.css" />
 	</head>
 	<body>
-
-		<article>
+		<header><div class="wrapper"><h1><a href="/">Muuuh <span>Wildlife Photography</span></a></h1></div></header>
+		<main>
 			<div class="wrapper">
-				<h2>Creatures P5.js Version 2</h2>
-				<p>Each cycle, the whole map is processed and each creature updated on a clone 
-					of the original map. When different offsprings are trying to occupy the 
-					same space, they are all removed.</p>
-			</div>			
-			<div class="wrapper">
+				<p class="breadcrumb"><a href="/">Home</a> / </p>
+				<h2>Natural Selection with "Creatures" - A Simulation</h2>
+				<p>Get a first-hand look at the process of natural selection with a simulation called "Creatures" written in JavaScript using the P5.js library. Experiment with different parameters and watch as species adapt and survive over time. For notes and explanations see below.</p>
 				<div class="grid-container">
 					<div>
-						<h3>Bubble, World, Universe ... Whatever</h3>
+						<h3>Pool, Planet, Universe ... Whatever</h3>
 						<div id="WorldOfCreatures"></div>
-						<p>
-							Species <span id="WOCSpecies"></span>
+						<p class="moveup">
 							Creatures <span id="WOCCreatures"></span>
 						</p>
-						<p><button onclick="javascript:startWorld();">Restart</button></p>	
 						<div class="grid-graphs">
 							<div>
-								<p style="margin-bottom:0.5em; font-weight:bold;">locA</p>
+								<h4>locA - red</h4>
 								<canvas id="locACanvas" width="255" height="100"></canvas>
 							</div>
 							<div>
-								<p style="margin-bottom:0.5em; font-weight:bold;">locB</p>
+								<h4>locB - green</h4>
 								<canvas id="locBCanvas" width="255" height="100"></canvas>
 							</div>
 							<div>					
-								<p style="margin-bottom:0.5em; font-weight:bold;">locC</p>
+								<h4>locC - blue</h4>
 								<canvas id="locCCanvas" width="255" height="100"></canvas>
 							</div>
 							<div>					
-								<p style="margin-bottom:0.5em; font-weight:bold;">locZ</p>
+								<h4>locZ</h4>
 								<canvas id="locZCanvas" width="255" height="100"></canvas>
 							</div>
 						</div>
 					</div>
 					<div>
-						<h3>Controls</h3>
-						<p>Mutation Rate 1/<span id="WOCMutationRate"></span><br />100 <span id="WOCMutationRates"></span> 10k</p>
-						<p>Crossover Rate 1/<span id="WOCCrossoverRate"></span><br />100 <span id="WOCCrossoverRates"></span> 10k</p>
-						<p>Perception <span id="WOCModel"></span><br />1 <span id="WOCModels"></span> 4</p>
-						<p>Polarization <span id="WOCPol"></span><br />+ <span id="WOCPols"></span> -</p>
-						<h3>Perception</h3>
-						<ol style="margin-top:0; padding-top:0">
-							<li>Always</li>
-							<li>locA vs locA'</li>
-							<li>locA vs locB'</li>
-							<li>locA vs locC'</li>
-						</ol>
-						<p  style="font-size: 0.9em;line-height: 1.4em;">If a creature can see a neighbour, locC determines if it is an ally or a rival.</p>
-						<h3>Polarization</h3>
-						<p  style="font-size: 0.9em;line-height: 1.4em;">With a positive polarization, a creature gains energy by having allies around and loses energy by having rivals around. With a negative polarization, the effect is reverse.</p>										
+						<h4>Controls</h4>
+						<p>Select Model <span id="WOCModel"></span><br /><span id="WOCModels"></span></p>
+						<p>Polarization <span id="WOCPol"></span><br /><span id="WOCPols"></span></p>
 					</div>
 				</div>
+				<h3>Random Notes</h3>
+				<p>Each cycle, the whole map is processed and each creature updated using a clone of the current map. When different offsprings are trying to occupy the same spot, they crash and vanish.</p>				
+				<h4>Models</h4>
+				<ol>
+					<li>Creatures use locC on locC' for spotting neighbors and for deciding if they are friends and foes.</li>
+					<li>Creatures use locA on locA' for spotting neighbors and locC on locC' for deciding if they are friends or foes.</li>
+					<li>Creatures use locA on locB' for spotting neighbors and locC on locC' for deciding if they are friends or foes.</li>
+					<li>Creatures use locA on locC' for spotting neighbors and locC on locC' for deciding if they are friends or foes.</li>
+				</ol>
+				<h4>Polarization</h4>
+				<p>With a positive polarization, a creature gains energy by having allies around and loses energy by having rivals around. With a negative polarization, the effect is reverse.</p>										
+				<h3>Fixes &amp; Updates</h3>
+				<ul>
+					<li>Minor corrections to get rid of the white pixels.</li>
+					<li>Turned the world from being flat to a globe.</li>
+					<li>Got rid of the artificial drift by randomly loop through pool.</li>
+					<li>Fixed the mutation rate, crossover rate.</li>
+					<li>Fixed locZ being mutated.</li>
+					<li>Fixed the issue where loc selected end up at 255,0 border</li>
+					<li>Fixed offspring placement preventing multiple placement and overwrite of existing</li>
+				</ul>
 			</div>
-		</article>
+		</main>
 	</body>
-</html>    
+</html>
