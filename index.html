@@ -1,78 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-    	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>Exploring Natural Selection with "Creatures" - A Simulation</title>
-    	<meta name="description" content="Get a first-hand look at the process of natural selection with a simulation called *Creatures* written in JavaScript using the P5.js library." />
-	<link rel="shortcut icon" href="/favicon.ico" />	
-	<link rel="canonical" href="https://muuuh.com/creatures/" />	
-	<script type="text/javascript" src="/_assets/js/p5.js"></script>
-	<script type="text/javascript" src="/_assets/js/creatures.p5v4.js"></script>
-	<link rel="stylesheet" type="text/css" href="/_assets/css/creatures.css" />
-	<link rel="stylesheet" type="text/css" href="/_assets/css/styles.20220923.css" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>Natural Selection of "Creatures" - A Simulation</title>
+		<meta name="description" content="Get a first-hand look at the process of natural selection with this simulation called "Creatures" written in JavaScript using the P5.js library." />
+		<link rel="shortcut icon" href="/favicon.ico" />	
+		<script type="text/javascript" src="/_assets/js/p5.js"></script>
+		<script type="text/javascript" src="/_assets/js/creatures.p5v4.js"></script>
+		<link rel="stylesheet" type="text/css" href="/_assets/css/creatures.css" />
+		<link rel="stylesheet" type="text/css" href="/_assets/css/styles.20220923.css" />
 	</head>
 	<body>
 		<header><div class="wrapper"><h1><a href="/">Muuuh <span>Wildlife Photography</span></a></h1></div></header>
 		<main>
 			<div class="wrapper">
 				<p class="breadcrumb"><a href="/">Home</a> / </p>
-				<h2>Natural Selection with "Creatures" - A Simulation</h2>
-				<p>Get a first-hand look at the process of natural selection with a simulation called "Creatures" written in JavaScript using the P5.js library. Experiment with different parameters and watch as species adapt and survive over time. For notes and explanations see below.</p>
+				<h2>Natural Selection of "Creatures" - A Simulation</h2>
+				<p>Get a first-hand look at the process of natural selection with this simulation called "Creatures" written in JavaScript using the P5.js library. Experiment with different models and watch as creatures adapt and survive over time. For notes and explanations see below.</p>
 				<div class="grid-container">
 					<div>
 						<h3>Pool, Planet, Universe ... Whatever</h3>
 						<div id="WorldOfCreatures"></div>
 						<p class="moveup">
-							Creatures <span id="WOCCreatures"></span>
+							Model <span id="WOCModel"></span> - Creatures <span id="WOCCreatures"></span> - Calc <span id="WOCCalc"></span> ms - Render <span id="WOCRender"></span> ms
 						</p>
-						<div class="grid-graphs">
-							<div>
-								<h4>locA - red</h4>
-								<canvas id="locACanvas" width="255" height="100"></canvas>
-							</div>
-							<div>
-								<h4>locB - green</h4>
-								<canvas id="locBCanvas" width="255" height="100"></canvas>
-							</div>
-							<div>					
-								<h4>locC - blue</h4>
-								<canvas id="locCCanvas" width="255" height="100"></canvas>
-							</div>
-							<div>					
-								<h4>locZ</h4>
-								<canvas id="locZCanvas" width="255" height="100"></canvas>
-							</div>
-						</div>
 					</div>
 					<div>
 						<h4>Controls</h4>
-						<p>Select Model <span id="WOCModel"></span><br /><span id="WOCModels"></span></p>
 						<p>Polarization <span id="WOCPol"></span><br /><span id="WOCPols"></span></p>
 					</div>
 				</div>
+			</div>
+			<div class="wrapper">
+				<p>Select Model <span id="WOCModels"></span></p>
+				<h3>Distributions</h3>
+				<div class="grid-graphs">
+					<div>
+						<h4>locA</h4>
+						<canvas id="locACanvas" width="255" height="100"></canvas>
+					</div>
+					<div>
+						<h4>locB</h4>
+						<canvas id="locBCanvas" width="255" height="100"></canvas>
+					</div>
+					<div>					
+						<h4>locC</h4>
+						<canvas id="locCCanvas" width="255" height="100"></canvas>
+					</div>
+					<div>					
+						<h4>locZ</h4>
+						<canvas id="locZCanvas" width="255" height="100"></canvas>
+					</div>
+					<div>					
+						<h4>Energy</h4>
+						<canvas id="EnergyCanvas" width="255" height="100"></canvas>
+					</div>					
+				</div>
+			</div>
+			<div class="wrapper">
 				<h3>Random Notes</h3>
 				<p>Each cycle, the whole map is processed and each creature updated using a clone of the current map. When different offsprings are trying to occupy the same spot, they crash and vanish.</p>				
 				<h4>Models</h4>
-				<ol>
-					<li>Creatures use locC on locC' for spotting neighbors and for deciding if they are friends and foes.</li>
-					<li>Creatures use locA on locA' for spotting neighbors and locC on locC' for deciding if they are friends or foes.</li>
-					<li>Creatures use locA on locB' for spotting neighbors and locC on locC' for deciding if they are friends or foes.</li>
-					<li>Creatures use locA on locC' for spotting neighbors and locC on locC' for deciding if they are friends or foes.</li>
-				</ol>
+				<p>There are two interactions tested between two individual creatures. First, can they see each other (perception) and secondly, tested only if they can see each other, are they friendly to each other (relationship). A model is described with two two-letter codes (e.g. CC, AB, ...). The capital letters of a code indicate which genes are used to determine perception or relationship (! indicates used to determine relationship). For example the code for Model 4 is "AA,!BC" which means that locA of individual 1 is compared to locA of individual 2 to determine perception and locB of individual 1 is compared to locC of individual 2 to determine relationship.</p>
+				<p>If test for perception passes (similar genes) then and only then relationship is tested. Based on the result of perception and relationship, an increase or decrease of fitness of individual 1 is calculated.</p>
+				<p>If an individual's fitness passes a certain threshold then it may divide if there is at least one empty field next to its location. If another individual tries to place a progeny in the same spot, the progeny with the higher fitness will get the spot.</p>
 				<h4>Polarization</h4>
-				<p>With a positive polarization, a creature gains energy by having allies around and loses energy by having rivals around. With a negative polarization, the effect is reverse.</p>										
+				<p>By default, friendly neighbors (passed relationship test) provide a fitness gain while unfriendly neighbors (failed relationship test) will cause a loss in fitness. With polarization the gain or loss can be set inverse.</p>										
 				<h3>Fixes &amp; Updates</h3>
 				<ul>
 					<li>Minor corrections to get rid of the white pixels.</li>
 					<li>Turned the world from being flat to a globe.</li>
 					<li>Got rid of the artificial drift by randomly loop through pool.</li>
-					<li>Fixed the mutation rate, crossover rate.</li>
-					<li>Fixed locZ being mutated.</li>
+					<li>Fixed the mutation rate</li>
+					<li>Removed "Crossover". Not doing what it should have been doing.</li>
 					<li>Fixed the issue where loc selected end up at 255,0 border</li>
 					<li>Fixed offspring placement preventing multiple placement and overwrite of existing</li>
+					<li>Removed bug which swapped locB with locA with Meiosis.</li>
+					<li>Implemented the switch among 36 different models (AA, AB, AC, BB, BC, CC).</li>
+				</ul>
+				<h3>References</h3>
+				<ul>
+					<li><a href="https://p5js.org/" target="_blank" rel="nofollow noopener">p5.js</a> - JavaScript library for creative coding.</li>
+					<li><a href="https://github.com/KHMuller/creatures" target="_blank" rel="nofollow noopener">Github Creatures</a> - Repository of this JavaScript and Webpage</li>
 				</ul>
 			</div>
 		</main>
+        <aside><div class="wrapper"><div id="feedbackform"></div></div></aside>
+		<footer>
+            <div class="wrapper"><div class="webform" data="newsletter"></div></div>
+			<div class="wrapper">
+				<p>				
+					<a href="/photos/">Photos</a>
+					<a href="/videos/">Videos</a>
+					<a href="/parks/">Parks</a>
+					<a href="/tales/">Tales</a>
+					<a href="/gear/">Gear</a>
+					<a href="/rules/">Rules</a>
+					<a href="/terms/">Terms</a>
+					<a href="/privacy/">Privacy</a>
+					<a href="/links/">Links</a>
+					<a href="/about/">About</a>
+					<a href="/contact/">Contact</a>
+					<a href="https://www.paypal.com/donate?hosted_button_id=QYPKPZT59SZ32" rel="nofollow noopener">*Donate*</a>
+					<a href="/">Home</a>
+				</p>
+				<p>All photos, videos and text are protected by copyright from the moment of creation. © khmuller</p>
+                <p><small>powered by simaec.net</small></p>
+			</div>
+		</footer>
+        <script defer src="/_assets/js/script.js"></script>
+        <script defer src='/_assets/js/webforms.js'></script>
+        <script defer src="/_assets/js/feedbackform.js"></script>		
 	</body>
 </html>
