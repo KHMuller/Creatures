@@ -6,10 +6,14 @@
 		<title>Natural Selection of "Creatures" - A Simulation</title>
 		<meta name="description" content="Get a first-hand look at the process of natural selection with this simulation called "Creatures" written in JavaScript using the P5.js library." />
 		<link rel="shortcut icon" href="/favicon.ico" />	
+		<link rel="canonical" href="https://muuuh.com/creatures/" />	
 		<script type="text/javascript" src="/_assets/js/p5.js"></script>
 		<script type="text/javascript" src="/_assets/js/creatures.p5v4.js"></script>
 		<link rel="stylesheet" type="text/css" href="/_assets/css/creatures.css" />
 		<link rel="stylesheet" type="text/css" href="/_assets/css/styles.20220923.css" />
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-W5EMM9M2T4"></script>
+        <script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W5EMM9M2T4',{cookie_domain:".muuuh.com",cookie_flags:"SameSite=None;Secure"});</script>
 	</head>
 	<body>
 		<header><div class="wrapper"><h1><a href="/">Muuuh <span>Wildlife Photography</span></a></h1></div></header>
@@ -23,7 +27,7 @@
 						<h3>Pool, Planet, Universe ... Whatever</h3>
 						<div id="WorldOfCreatures"></div>
 						<p class="moveup">
-							Model <span id="WOCModel"></span> - Creatures <span id="WOCCreatures"></span> - Calc <span id="WOCCalc"></span> ms - Render <span id="WOCRender"></span> ms
+							Model <span id="WOCModel"></span> - Species <span id="WOCSpecies"></span> - Creatures <span id="WOCCreatures"></span> - Calc <span id="WOCCalc"></span> ms - Render <span id="WOCRender"></span> ms - Cycles <span id="WOCCycles"></span>
 						</p>
 					</div>
 					<div>
@@ -35,6 +39,7 @@
 			<div class="wrapper">
 				<p>Select Model <span id="WOCModels"></span></p>
 				<h3>Distributions</h3>
+				<p>For all distribution graphs: x-axis from 0, left, to 255, right; y-axis from 0 to max count. The value of max count may change from render to render. Only counts &gt; 2 are shown.</p>
 				<div class="grid-graphs">
 					<div>
 						<h4>locA</h4>
@@ -57,9 +62,11 @@
 						<canvas id="EnergyCanvas" width="255" height="100"></canvas>
 					</div>					
 				</div>
+				
 			</div>
+
 			<div class="wrapper">
-				<h3>Random Notes</h3>
+				<h3>Interaction Models and Energy Balance</h3>
 				<p>Each cycle, the whole map is processed and each creature updated using a clone of the current map. When different offsprings are trying to occupy the same spot, they crash and vanish.</p>				
 				<h4>Models</h4>
 				<p>There are two interactions tested between two individual creatures. First, can they see each other (perception) and secondly, tested only if they can see each other, are they friendly to each other (relationship). A model is described with two two-letter codes (e.g. CC, AB, ...). The capital letters of a code indicate which genes are used to determine perception or relationship (! indicates used to determine relationship). For example the code for Model 4 is "AA,!BC" which means that locA of individual 1 is compared to locA of individual 2 to determine perception and locB of individual 1 is compared to locC of individual 2 to determine relationship.</p>
